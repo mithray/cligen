@@ -14,3 +14,19 @@ testFunc:
   - parameters:
       command: 
     condition: Should not fail
+testFunc:
+  name: 'testFunc'
+  description: 'Should load spec from file'
+  func_name: 'testFunc'
+  params_user:
+  - name: message
+    type: string
+    default: 'Hello :)'
+  params_internal: 
+  - name: 
+    type: 
+    default: 
+  tests:
+  - parameters:
+      command: 
+    condition: Should not fail

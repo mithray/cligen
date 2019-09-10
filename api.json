@@ -1,0 +1,38 @@
+[
+    {
+        "name": "testFunc",
+        "options": [
+            {
+                "name": "test",
+                "abbr": "t",
+                "alias": ["tst"],
+                "boolean": false,
+                "default": null,
+                "help": "Should load spec from file"
+            }
+        ],
+        "command": "testFunc",
+        "params_user": [
+            {
+                "name": "message",
+                "type": "string",
+                "default": "Hello :)"
+            }
+        ],
+        "params_internal": [
+            {
+                "name": null,
+                "type": null,
+                "default": null
+            }
+        ],
+        "tests": [
+            {
+                "parameters": {
+                    "command": null
+                },
+                "condition": "Should not fail"
+            }
+        ]
+    }
+]

@@ -24,9 +24,7 @@ async function getCommanderCommand(args) {
 
 const commands = {}
 
-async function loadCommands(apis_array) {
-    let api = apis_array[0]
-    api.spec = await loadSpecFile(api.spec_path)
+async function loadCommands() {
     for (let command of Object.values(api.spec)) {
         command.path_prefix = api.exec_path
         commands[command.name] = command
@@ -54,6 +52,11 @@ async function loadCommands(apis_array) {
             }
         }
     }
+}
+async function loadApis(apis) {
+    for (let api of apis) {
+        api.spec = await loadSpecFile(api.spec_path)
+    }
 
     const config = await readPkgUp()
 
@@ -63,4 +66,4 @@ async function loadCommands(apis_array) {
     return program
 }
 
-module.exports = loadCommands
+module.exports = loadApis
