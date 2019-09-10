@@ -30,7 +30,7 @@ There are two steps to using this tool.
 
 ### Using the bdd-cligen module
 
-This is the main executable and should be placed in the `./bin` directory of your node project. The variable `program` is a [commander](https://www.npmjs.com/package/commander) object.
+This is the main executable and should be placed in the `./bin` directory of your node project. The variable `program` is a [commander](https://www.npmjs.com/package/commander) object. It will make all functions in the `exec_path` callable with `your_app_name subcommand function_name --option_with_no_param --option_with_param icecream`
 
 ```javascript
 #!/usr/bin/env node
