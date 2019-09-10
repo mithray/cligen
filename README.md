@@ -1,5 +1,7 @@
 # CLI Generator
 
+![emiln](https://raw.githubusercontent.com/mithrayls/songshu/master/emiln.svg)
+
 ## Introduction
 
 Generates a cli api from a configuration file at run time, allowing you to write a cli program declaratively.
@@ -76,4 +78,5 @@ testFunc:
           type:
           default:
 ```
+
 # emiln
