@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+const path = require('path')
+const changeCase = require('change-case')
+const log = require('@mithray/logger')
+const fs = require('fs')
+const readPkgUp = require('read-pkg-up')
+
+const loadSpecFile = require('./lib/loadSpecFile.js')
+const loadFunction = require('./lib/loadFunction.js')
+const parseCommandData = require('./lib/parseCommandData.js')
+const print = require('./lib/print.js')
+const arrangeImplicitParameters = require('./lib/arrangeImplicitParameters.js')
+const addCommandFlags = require('./lib/addCommandFlags.js')
+
+const generic_opts = {
+    pretty: {
+        name: '--no-pretty',
+        description: 'Will print stringified objects instead of colorized yaml'
+    }
+}
+
+async function result(name) {
+    let res = await commandData.func({
+        name,
+        ...commandData.implicit_params
+    })
+    console.log(res.stdout.trim())
+}
+
+async function getData() {
+    return commandData
+}
+
+async function loadCommands(options) {
+    let spec = await loadSpecFile(options.path)
+
+    for (let idx in spec.api) {
+        let commandData, command, implicit_params
+
+        commandData = await parseCommandData(spec, idx)
+        commandData.func = await loadFunction(commandData)
+
+        commandData.implicit_params = await arrangeImplicitParameters(
+            commandData
+        )
+        console.log(commandData)
+
+        program
+            .command(commandData.name)
+            .description(commandData.description)
+            .option(...Object.values(generic_opts.pretty))
+            .action(result)
+
+        for (let j in commandData.param_descs_expl) {
+            let param = commandData.param_descs_expl[j]
+            console.log(param)
+            let i = program.commands.findIndex(function(o) {
+                return o._name === commandData.name
+            })
+            let param_param = changeCase.paramCase(param.name)
+            let flag = '--' + param_param + '<' + param_param + '>'
+            let desc = param + ' default value is ' + param.default
+            program.commands[i].option(flag, desc, param.default)
+        }
+    }
+
+    const config = await readPkgUp(path.dirname(options.path))
+
+    program.name(config.package.name)
+    program.version(config.package.version)
+
+    return program
+}
+
+module.exports = loadCommands
