@@ -1,8 +1,8 @@
-# Behavior Driven Development CLI Generator
+# CLI Generator
 
 ## Introduction
 
-Given a yaml file defining commands with a particular syntax, generates a cli program.
+Generates a cli api from a configuration file at run time, allowing you to write a cli program declaratively.
 
 ## Contents
 
@@ -14,19 +14,19 @@ Given a yaml file defining commands with a particular syntax, generates a cli pr
 ## Installation
 
 ```shell
-// With yarn
-yarn add @mithray/bdd-cligen
+yarn add cligen
 
-// With npm
-npm i @mithray/bdd-cligen
+# or
+
+npm i cligen
 ```
 
 ## Usage
 
 There are two steps to using this tool.
 
-1. Using the `bdd-cligen` module
-2. Writing a yaml file that defines your own API
+1. Using the `cligen` module
+2. Writing a json or yaml file that defines your own API
 
 ### Using the bdd-cligen module
 
@@ -35,34 +35,44 @@ This is the main executable and should be placed in the `./bin` directory of you
 ```javascript
 #!/usr/bin/env node
 
-const cligen = require('@mithray/bdd-cligen')
-cligen({ path: './api.yml' }).then(program => {
+const cligen = require('cligen')
+
+const api = [
+    {
+        spec_path: './spec/api.yml',
+        exec_path: './lib',
+        subcommand: ''
+    },
+    {
+        spec_path: './spec/sub1.yml',
+        exec_path: './lib/subpath1',
+        subcommand: 'subcommand1'
+    },
+    {
+        spec_path: './spec/subcommand2.yml',
+        exec_path: './lib/another_subpath2',
+        subcommand: 'subcommand2'
+    }
+]
+
+cligen(api).then(program => {
     program.parse(process.argv)
 })
 ```
 
 ### Writing a yaml file
 
-The yaml program specifies options defining the interface of your functions. Not all of these are necessary to generate the cli, but they could be used by other programs such as an integration with JSDoc andmocha testing. `bdd-cligen` only requires you to define the variables `description`, `function`, `parameter_desc` for every function. Testing might suggest the `path_prefix` also needs to be defined, and the root parent of the tests also must be called `api`.
-
 ```yaml
----
-path_prefix: 'lib'
-
-api:
-    someFunc:
-        description: 'A description of your function to appear in Help files'
-        function: 'nameOfFunction'
-        parameter_desc: '{string} [someString="This yaml property has JSDoc syntax"]'
-        tests:
-            - parameters: { someString: 'A description of various tests' }
-              condition: 'should have property "api"'
-            - parameters: >
-                  {
-                      someString: 'These descriptions will be used to generate BDD tests using mochajs and should.js',
-                  }
-              condition: 'should have property "api"'
+testFunc:
+    name: 'testFunc'
+    description: 'Should load spec from file'
+    func_name: 'testFunc'
+    params_user:
+        - name: message
+          type: string
+          default: 'Hello :)'
+    params_internal:
+        - name:
+          type:
+          default:
 ```
-
-Note, the `tests` property will not actually be used, but it is likely to be helpful for future integrations. These test descriptions will be used to generate BDD tests using mochajs and should.js. The syntax of the condition property is like that of should.js, except that it has dots converted to spaces and function calls converted to quotes.
-# cligen
